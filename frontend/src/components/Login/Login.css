@@ -1,0 +1,59 @@
+@import url("https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Quicksand&family=Raleway:ital,wght@0,500;1,500&family=Roboto+Mono:wght@200&display=swap");
+
+.titleLogin {
+    font-family: "Raleway", "sans-serif";
+    text-align: center;
+    margin-top: 20px;
+}
+
+.formLogin {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    gap: 20px;
+}
+
+.boxLogin {
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.formLogin {
+    width: 400px;
+    padding: 20px;
+    background-color: #c2bfbf;
+    border-radius: 10px;
+}
+
+.formLogin>* {
+    margin-bottom: 20px;
+}
+
+.formLogin span {
+    display: block;
+    text-align: center;
+}
+
+.formLogin span a {
+    color: rgb(38, 38, 86);
+}
+
+.formLogin span a:hover {
+    text-decoration: underline;
+}
+
+.formLogin Button[type="submit"] {
+    background-color: #946a6a;
+    /* Cambia el color a verde */
+    color: white;
+    /* Cambia el color del texto a blanco */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+}
+
+.formLogin Button[type="submit"]:hover {
+    background-color: #99ac99;
+    /* Cambia el color a un tono más oscuro de verde al pasar el mouse */
+}
