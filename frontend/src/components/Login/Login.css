@@ -9,25 +9,25 @@
 .formLogin {
     display: flex;
     flex-direction: column;
-    width: 50%;
-    gap: 20px;
+    /* width: 50%; */
+    gap: 17px;
 }
 
 .boxLogin {
-    padding: 40px;
+    /* padding: 40px; */
     display: flex;
     justify-content: center;
 }
 
 .formLogin {
-    width: 400px;
+    width: 350px;
     padding: 20px;
-    background-color: #c2bfbf;
+    background-color: #f2f2f2;
     border-radius: 10px;
 }
 
 .formLogin>* {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .formLogin span {

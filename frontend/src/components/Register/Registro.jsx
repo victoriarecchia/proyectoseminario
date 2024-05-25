@@ -1,76 +1,108 @@
-import { Box, Button, TextField } from '@mui/material'
-import { useState, useEffect } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
-import Axios from 'axios'
+import { Box, Button, TextField, Typography } from '@mui/material';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Axios from 'axios';
 
 
 export const Registro = () => {
-  const [email, setEmail] = useState('')
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const navigateTo = useNavigate()
+  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigateTo = useNavigate();
 
-  // Onclick en el boton submit
-  const createUser = (e) => {
-    e.preventDefault()
-    // Usamos Axios para crear una API para conectar con el servidor
-    Axios.post('http://localhost:3002/registro', {
-      Email: email,
-      Username: username,
-      Password: password
-    }).then(() => {
-      // Una vez registrado nos redirigimos al login
-      navigateTo("/login")
-      setEmail('')
-      setUsername('')
-      setPassword('')
-    })
-  }
+  const createUser = async (e) => {
+    e.preventDefault();
+
+    if (password !== confirmPassword) {
+      setErrorMessage('Las contraseñas no coinciden');
+      return;
+    }
+
+    try {
+      const response = await Axios.post('http://localhost:8000/registro', {
+        Email: email,
+        Username: username,
+        Password: password,
+      });
+
+      if (response.status === 201) {
+        navigateTo('/login');
+        setEmail('');
+        setUsername('');
+        setPassword('');
+        setConfirmPassword('');
+        setErrorMessage('');
+      }
+    } catch (error) {
+      setErrorMessage(error.response?.data?.error || 'Error al registrar el usuario');
+    }
+  };
 
   return (
     <>
-      <h1 className='titleLogin'>Registro</h1>
-      <div style={{ padding: "40px", display: "flex", justifyContent: "center" }}>
-        <form className='formLogin'>
+      <Typography variant="h4" align="center" gutterBottom>
+        Registro
+      </Typography>
+      <div style={{ padding: '40px', display: 'flex', justifyContent: 'center' }}>
+        <form className='formLogin' onSubmit={createUser}>
           <TextField
             label="Usuario"
             variant="outlined"
             name="username"
+            value={username}
             onChange={(e) => setUsername(e.target.value)}
+            fullWidth
+            margin="normal"
           />
           <TextField
             label="Email"
             variant="outlined"
             name="email"
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
-
+            fullWidth
+            margin="normal"
           />
           <TextField
             onChange={(e) => setPassword(e.target.value)}
             name="password"
-            id="outlined-password-input"
+            value={password}
             label="Contraseña"
             type="password"
             autoComplete="current-password"
             placeholder='Ingrese su contraseña'
-
+            fullWidth
+            margin="normal"
           />
           <TextField
             label="Confirmar contraseña"
             variant="outlined"
             name="confirmarContraseña"
             type="password"
-            autoComplete="current-password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            fullWidth
+            margin="normal"
           />
-          <Box
-            sx={{ width: "100%", display: "flex", justifyContent: "center" }}>
-            <Button type="submit" variant="contained" sx={{ width: 200 }} onClick={createUser}>
+          {errorMessage && (
+            <Typography color="error" align="center">
+              {errorMessage}
+            </Typography>
+          )}
+          <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+            <Button type="submit" variant="contained" sx={{ width: 200 }}>
               Enviar
             </Button>
           </Box>
-          <Link to="/login">Ya tengo cuenta</Link>
+          <Box sx={{ textAlign: 'center', marginTop: 2 }}>
+            <Link to="/login">Ya tengo cuenta</Link>
+          </Box>
         </form>
       </div>
     </>
-  )
-}
+  );
+};
+
+export default Registro;

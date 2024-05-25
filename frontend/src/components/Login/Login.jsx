@@ -1,57 +1,61 @@
-import { Box, Button, TextField } from '@mui/material'
-import "./Login.css"
-import { Link, useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import  Axios from 'axios'
+import { Box, Button, TextField, Typography } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Axios from 'axios';
+import "./Login.css";
 
 export const Login = () => {
+  const [loginUsername, setLoginUsername] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [loginStatus, setLoginStatus] = useState('');
+  const [statusHolder, setStatusHolder] = useState('message');
+  const [errorMessage, setErrorMessage] = useState('')
+  const navigateTo = useNavigate();
 
-  const [loginUsername, setLoginUsername] = useState("")
-  const [loginPassword, setLoginPassword] = useState("")
-  const navigateTo = useNavigate()
+  const loginUser = async (e) => {
+    e.preventDefault();
 
-  const [loginStatus, setLoginStatus]= useState("")
-  const [statusHolder, setStatusHolder]= useState('message')
+    if (loginUsername == '' || loginPassword == '') {
+      setErrorMessage('Rellene todos los campos');
+      return;
+    }
 
-
-  const loginUser = (e) => {
-    e.preventDefault()
-    // Usamos Axios para crear una API para conectar con el servidor
-    Axios.post('http://localhost:3002/login', {
-      LoginUsername: loginUsername,
-      LoginPassword: loginPassword
-    }).then((response) => {
-      // console.log(response.data);
-      if (response.data.message || loginUsername == '' || loginPassword == '') {
-        navigateTo("/login")
-        setLoginStatus('Datos incorrectos')
+    try {
+      const response = await Axios.post('http://localhost:8000/login', {
+        LoginUsername: loginUsername,
+        LoginPassword: loginPassword,
+      },
+      {  headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      if (response.data.success) {
+        navigateTo('/');
+        setLoginPassword('')
+        setLoginUsername('')
+        setErrorMessage('')
+      } else {
+        setLoginStatus(response.data.message);
       }
-      else{
-        navigateTo("/")
-      }
-    })
+    } catch (error) {
+      setErrorMessage(error.response?.data?.error || 'Datos incorrectos');
+    }
   }
+
   useEffect(() => {
-    if(loginStatus!== ''){
-      setStatusHolder('showMessage')
+    if (loginStatus !== '') {
+      setStatusHolder('showMessage');
       setTimeout(() => {
-        setStatusHolder('message')
-        
+        setStatusHolder('message');
       }, 4000);
     }
-  }, [loginStatus])
-  
-  const onSubmit = () => {
-    setLoginUsername('')
-    setLoginPassword('')
-  }
-
+  }, [loginStatus]);
 
   return (
     <>
       <h1 className='titleLogin'>Login</h1>
-      <div style={{ padding: "40px", display: "flex", justifyContent: "center" }}>
-        <form className='formLogin' onSubmit={onSubmit}>
+      <div style={{ padding: '40px', display: 'flex', justifyContent: 'center' }}>
+        <form className='formLogin' onSubmit={loginUser}>
           <span className={statusHolder}>{loginStatus}</span>
           <TextField
             onChange={(e) => setLoginUsername(e.target.value)}
@@ -61,7 +65,7 @@ export const Login = () => {
             placeholder='Ingrese su usuario'
           />
           <TextField
-            onChange={(e)=>setLoginPassword(e.target.value)}
+            onChange={(e) => setLoginPassword(e.target.value)}
             name="contraseña"
             id="outlined-password-input"
             label="Password"
@@ -69,28 +73,21 @@ export const Login = () => {
             autoComplete="current-password"
             placeholder='Ingrese su contraseña'
           />
-          <TextField
-            id="outlined-password-input"
-            type="password"
-            autoComplete="current-password"
-            label="Confirm Password"
-            variant="outlined"
-            name="confirmarContraseña"
-            placeholder='Repita su contraseña'
-            onChange={ (e)=> setLoginPassword(e.target.value) }
-
-          />
-          <Box sx={{ width: "100%", display: "flex", justifyContent: "center", gap: "20px" }}>
-            <Button type="submit" variant="contained" onClick={loginUser} sx={{ width: 200 }}>
+          {errorMessage && (
+            <Typography color="error" align="center">
+              {errorMessage}
+            </Typography>
+          )}
+          <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '20px', marginTop: 2 }}>
+            <Button type="submit" variant="contained" sx={{ width: 200 }}>
               Enviar
             </Button>
           </Box>
-          <span>¿Te olvidaste tu contraseña? <Link>Click aca</Link></span>
-          <span>¿No tienes cuenta?  <Link to="/registro">Registrarme</Link></span>
-
+          <span>¿Te olvidaste tu contraseña? <Link>Click acá</Link></span>
+          <span>¿No tienes cuenta? <Link to="/registro">Registrarme</Link></span>
         </form>
       </div>
-
     </>
-  )
-}
+  );
+};
+

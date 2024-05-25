@@ -1,0 +1,9 @@
+.filtrosUsuarios{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  gap: 20px;
+  padding: 20px;
+}
